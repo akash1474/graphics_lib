@@ -1,0 +1,22 @@
+[
+ {
+  "directory": "D:\\Projects\\c++\\graphics_lib",
+  "arguments": [
+   "g++",
+   "-std=c++17",
+   "-O3",
+   "-s",
+   "-I./include",
+   "-I./lib/include",
+   "-L./bin",
+   "-lglfw3",
+   "-lopengl32",
+   "-lglew32",
+   "-c",
+   "-o",
+   "src/main.o",
+   "src/main.cpp"
+  ],
+  "file": "src/main.cpp"
+ }
+]
