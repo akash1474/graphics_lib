@@ -3,9 +3,9 @@
   "directory": "D:\\Projects\\c++\\graphics_lib",
   "arguments": [
    "g++",
-   "-std=c++17",
    "-O3",
    "-s",
+   "-std=c++17",
    "-I./include",
    "-I./lib/include",
    "-L./bin",

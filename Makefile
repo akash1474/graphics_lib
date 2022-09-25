@@ -1,4 +1,4 @@
-CXXFLAGS=-O3 -s -I./include -I./lib/include -L./bin -lglfw3 -lopengl32 -lglew32
+CXXFLAGS=-O3 -s -std=c++17 -I./include -I./lib/include -L./bin -lglfw3 -lopengl32 -lglew32
 SRC_DIR:=$(wildcard ./src/*.cpp)
 SRC_OBJ:=$(patsubst %.cpp,%.o,$(SRC_DIR))
 SRC_DEP:=$(patsubst %.cpp,%.d,$(SRC_DIR))
@@ -13,7 +13,7 @@ all:$(SRC_OBJ)
 
 %.o:%.cpp
 	@echo $<
-	@$(CXX) -std=c++17 $(CXXFLAGS) -c -o $@ $<
+	@$(CXX) $(CXXFLAGS) -c -o $@ $<
 clean:
 	@rm -r ./src/*.o 
 	@rm -r ./bin/*.exe
