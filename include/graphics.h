@@ -6,6 +6,7 @@
 #include "GLFW/glfw3.h"
 #include <string.h>
 #include "math.h"
+#include "iostream"
 
 struct Vec2i{
     int x;
@@ -117,10 +118,37 @@ public:
 };
 
 namespace glx{
-
-
-
     static double mx=0,my=0;
+    static bool doStroke=true;
+
+    void enableFill(){
+        doStroke=true;
+    }
+
+    void enableStroke(){
+        doStroke=false;
+    }
+
+    void reset(){
+        doStroke=true;
+    }
+
+    inline static void stroke(int x){
+        glColor3ub(x,x,x);
+    }
+
+    void stroke(int r,int g,int b,int a=255){
+        glColor4ub(r,g,b,a);
+    }
+
+    inline static void fill(int x){
+        glColor3ub(x,x,x);
+    }
+
+    void fill(int r,int g,int b,int a=255){
+        glColor4ub(r,g,b,a);
+    }
+
     void event(GLFWwindow* w){
         glfwGetCursorPos(w, &mx, &my);
     }
@@ -133,11 +161,16 @@ namespace glx{
         glColor4ub(r,g,b,a);
     }
 
-    void line(int x1,int y1,int x2,int y2){
+    bool line(int x1,int y1,int x2,int y2){
         glBegin(GL_LINES);
         glVertex2f(x1,y1);
         glVertex2f(x2,y2);
         glEnd();
+        int dx=x2-x1;
+        int dy=y2-y1;
+        double num=abs((dy*mx)-(dx*my)+(x2*y1)-(y2*x1));
+        double deno=sqrt(pow(dy,2)+pow(dx,2));
+        return num/deno < 3;
     }
 
     void strokeWidth(int x=1){
@@ -145,13 +178,12 @@ namespace glx{
     }
 
 
-    void ellipse(GLfloat cx, GLfloat cy, GLfloat rx,GLfloat ry,bool stroke=true) {
+    void ellipse(GLfloat cx, GLfloat cy, GLfloat rx,GLfloat ry) {
         int i;
         int amt = 20;
         GLfloat twicePi = 2.0f * 3.141;
 
-        glBegin(stroke ? GL_LINE_LOOP:GL_POLYGON);
-        // glVertex2f(cx, cy);
+        glBegin(doStroke ? GL_LINE_LOOP:GL_POLYGON);
         for (i = 0; i <= amt; i++) {
             glVertex2f(
                 cx + ((rx+1)* cos(i * twicePi / amt)),
@@ -161,8 +193,8 @@ namespace glx{
         glEnd();
     }
 
-    void circle(float cx, float cy, float r, int num_segments=25,bool stroke=true) {
-        glBegin(stroke ? GL_LINE_LOOP : GL_POLYGON);
+    bool circle(float cx, float cy, float r, int num_segments=25) {
+        glBegin(doStroke ? GL_LINE_LOOP : GL_POLYGON);
 
         for (int ii = 0; ii < num_segments; ii++)   {
             float theta = 2.0f * 3.1415926f * float(ii) / float(num_segments);
@@ -171,10 +203,11 @@ namespace glx{
             glVertex2f(x + cx, y + cy); 
         }
         glEnd();
+        return sqrt((mx - cx)*(mx - cx) + (my - cy)*(my - cy)) <= r;
     }
 
     void quad(int x1,int y1,int x2,int y2,int x3,int y3,int x4,int y4){
-        glBegin(GL_LINE_LOOP);
+        glBegin(doStroke ? GL_LINE_LOOP : GL_POLYGON);
         glVertex2i(x1,y1);
         glVertex2i(x2,y2);
         glVertex2i(x3,y3);
@@ -189,7 +222,7 @@ namespace glx{
     void rect(int x1,int y1,int x2,int y2){
         int dx=abs(x2-x1);
         int dy=abs(y2-y1);
-        glBegin(GL_LINE_LOOP);
+        glBegin(doStroke ? GL_LINE_LOOP : GL_POLYGON);
         glVertex2i(x1,y1);
         glVertex2i(x1+dx,y1);
         glVertex2i(x1+dx,y1+dy);
@@ -202,7 +235,12 @@ namespace glx{
     }
 
     void square(int x1,int y1,int s){
-        rect(x1,y1,x1+s,y1+s);
+        glBegin(doStroke ? GL_LINE_LOOP : GL_POLYGON);
+        glVertex2i(x1,y1);
+        glVertex2i(x1+s,y1);
+        glVertex2i(x1+s,y1+s);
+        glVertex2i(x1,y1+s);
+        glEnd();
     }
 
     void square(Vec2i& p,int x){
@@ -241,13 +279,7 @@ namespace glx{
 
 
 
-    inline static void fill(int x){
-        glColor3ub(x,x,x);
-    }
 
-    void fill(int r,int g,int b,int a=255){
-        glColor4ub(r,g,b,a);
-    }
 
     void point(Vec2i a){
         point(a.x,a.y);

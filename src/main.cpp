@@ -59,12 +59,11 @@ int main(void){
                    break;
             }
         }
-        glx::quad(10,10,100,10,50,200,120,252);
-        glx::rect(10,10,100,120);
-        
-        glx::square(150,150,100);
+        if(isHovered) glColor3ub(0,200,240);
+        if(glx::line(10,10,250,70)) isHovered=true;
+        else isHovered=false;
         if(done){
-            glx::beginShape();
+            // glx::beginShape();
             for(float t=0;t<=1.0f;t+=delta){
                 int x1=glx::lerp(p1.x,p3.x,t);
                 int y1=glx::lerp(p1.y,p3.y,t);
@@ -72,13 +71,13 @@ int main(void){
                 int y2=glx::lerp(p3.y,p2.y,t);
                 int x=glx::lerp(x1,x2,t);
                 int y=glx::lerp(y1,y2,t);
-                glx::vertex(x,y);
-                // glx::line(x1,y1,x2,y2);
+                // glx::vertex(x,y);
+                glx::line(x1,y1,x2,y2);
             }
-            glx::endShape();
+            // glx::endShape();
         }
         draw_grid();
-
+        glx::reset();
         win.swapBuffers();
     }
     win.destroy();
