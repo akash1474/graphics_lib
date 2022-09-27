@@ -1,8 +1,7 @@
 #include "glm/fwd.hpp"
 #include "iostream"
 #include "graphics.h"
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "matrix.h"
 
 #define WIDTH 480
 #define HEIGHT 480
@@ -38,8 +37,15 @@ int main(void){
     int j=1;
     bool isHovered=false;
     glfwSetMouseButtonCallback(win.getglfwWindow(), mouse_button_callback);
-    glm::mat4 m(1.0f);
-    std::cout << m.length() << std::endl;
+    Matrix m(3,3);
+    Matrix m2(3,1);
+    
+
+    try{
+        Matrix::dot(m2,m).print();
+    }catch(Matrix::matrix_error err){
+        std::cout << err.what() << std::endl;
+    }
     while (win.isOpen()){
         win.clear(30);
         glx::event(win.getglfwWindow());
