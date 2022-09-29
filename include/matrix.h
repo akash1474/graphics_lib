@@ -13,6 +13,12 @@
  * @params (int row, int cols, std::vector<std::vector<double>>)
  * @params (int row, int cols, double initialValue)
 */
+
+struct vec3{
+	float x,y,z;
+	vec3(float a,float b,float c):x(a),y(b),z(c){}
+};
+
 class Matrix{
 public:
 	int rows;
@@ -23,7 +29,9 @@ public:
 		private:		
 			const char* m_Msg;
 		public:
-			matrix_error(const char* err):m_Msg(err){}
+			matrix_error(const char* err):m_Msg(err){
+				std::cout << "ERROR: " << m_Msg << std::endl;
+			}
 			virtual const char* what()const noexcept override{
 				std::cout << "MATRIX_ERROR: ";
 				return this->m_Msg;
@@ -82,6 +90,9 @@ public:
 	static Matrix map(Matrix&,Matrix&,double(*fn)(double,double));
 	static Matrix mapx(Matrix,Matrix,std::function<double(double,double)>);
 	static Matrix rowSum(Matrix,std::vector<double>(*fn)(std::vector<double>));
+	static Matrix rotate(Matrix,const float&,const vec3&);
+	static Matrix translate(Matrix,const vec3&);
+	static Matrix scale(Matrix,const vec3&);
 };
 
 

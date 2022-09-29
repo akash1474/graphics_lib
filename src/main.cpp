@@ -2,6 +2,10 @@
 #include "iostream"
 #include "graphics.h"
 #include "matrix.h"
+#include "chrono"
+#include "thread"
+#include "glm/glm.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
 #define WIDTH 480
 #define HEIGHT 480
@@ -37,57 +41,47 @@ int main(void){
     int j=1;
     bool isHovered=false;
     glfwSetMouseButtonCallback(win.getglfwWindow(), mouse_button_callback);
-    Matrix m(3,3);
-    Matrix m2(3,1);
+    float angle=0.0;
+
+    Matrix cube(4,8,{
+        {50,50,-50,-50,50,50,-50,-50},
+        {50,-50,50,-50,50,-50,50,-50},
+        {50,50,50,50,-50,-50,-50,-50},
+        {  1, 1, 1, 1, 1,  1,  1,  1}
+    });
+
+    double dis= 0.8;
+    Matrix proj(4,4,{
+        {dis,0,0,0},
+        {0,dis,0,0},
+        {0,0,dis,0},
+        {0,0,0  ,1},
+    });
     
 
-    try{
-        Matrix::dot(m2,m).print();
-    }catch(Matrix::matrix_error err){
-        std::cout << err.what() << std::endl;
-    }
     while (win.isOpen()){
         win.clear(30);
         glx::event(win.getglfwWindow());
-        p3=glx::mousePos();
-        if(!done && isClicked){
-            isClicked=false;
-            switch(j){
-                case 1:
-                   p1.x=p3.x; 
-                   p1.y=p3.y;
-                   j++;
-                   break;
-                case 2:
-                   p2.x=p3.x; 
-                   p2.y=p3.y;
-                   j++;
-                   break;
-                case 3:
-                   p3.x=p3.x; 
-                   p3.y=p3.y;
-                   done=true;
-                   break;
-            }
+      
+        Matrix rotate=Matrix::rotate(cube,angle,{1.0f,1.0f,1.0f});
+        Matrix scale=Matrix::scale(rotate,{1.5f,1.5f,1.5f});
+        Matrix translate=Matrix::translate(scale,{50.0f,50.0f,1.0f});
+        Matrix projected=Matrix::dot(proj,translate); //2x8
+        projected+200;
+        for(int i=0;i<projected.cols;i++){
+            glx::point(projected.data[0][i],projected.data[1][i]);
         }
-        if(isHovered) glColor3ub(0,200,240);
-        if(glx::line(10,10,250,70)) isHovered=true;
-        else isHovered=false;
-        if(done){
-            glx::beginShape();
-            for(float t=0;t<=1.0f;t+=delta){
-                int x1=glx::lerp(p1.x,p3.x,t);
-                int y1=glx::lerp(p1.y,p3.y,t);
-                int x2=glx::lerp(p3.x,p2.x,t);
-                int y2=glx::lerp(p3.y,p2.y,t);
-                int x=glx::lerp(x1,x2,t);
-                int y=glx::lerp(y1,y2,t);
-                glx::vertex(x,y);
-                // glx::line(x1,y1,x2,y2);
-            }
-            glx::endShape();
+
+        for(int i=0;i<7;i++){
+            if(i%2==0) glx::line(projected.data[0][i],projected.data[1][i],projected.data[0][i+1],projected.data[1][i+1]);
+            if(i < 4) glx::line(projected.data[0][i],projected.data[1][i],projected.data[0][i+4],projected.data[1][i+4]);
+            if(i==0 ||i==1 || i==4 || i==5) glx::line(projected.data[0][i],projected.data[1][i],projected.data[0][i+2],projected.data[1][i+2]);
         }
+
+
+        angle+=0.05;
         draw_grid();
+        std::this_thread::sleep_for(std::chrono::milliseconds(16));
         glx::reset();
         win.swapBuffers();
     }

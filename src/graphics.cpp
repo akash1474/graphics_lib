@@ -56,7 +56,6 @@ void glx::ellipse(GLfloat cx, GLfloat cy, GLfloat rx,GLfloat ry) {
     int i;
     int amt = 20;
     GLfloat twicePi = 2.0f * 3.141;
-
     glBegin(glx::strokeEnabled ? GL_LINE_LOOP:GL_POLYGON);
     for (i = 0; i <= amt; i++) {
         glVertex2f(

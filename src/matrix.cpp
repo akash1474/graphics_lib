@@ -321,6 +321,63 @@ Matrix Matrix::rowSum(Matrix m,std::vector<double>(*fn)(std::vector<double>)){
 	return mat;
 }
 
+Matrix Matrix::rotate(Matrix m,const float& angle,const vec3& dim){
+	Matrix rotateX(4,4,{
+	 {1,0,0,0},
+	 {0,cos(angle),-sin(angle),0},
+	 {0,sin(angle),cos(angle),0},
+	 {0,0,0,1}
+	});
+
+	Matrix rotateY(4,4,{
+	 {cos(angle),0,sin(angle),0},
+	 {0,1,0,0},
+	 {-sin(angle),0,cos(angle),0},
+	 {0,0,0,1}
+	});
+
+	Matrix rotateZ(4,4,{
+	 {cos(angle),-sin(angle),0,0},
+	 {sin(angle),cos(angle),0,0},
+	 {0,0,1,0},
+	 {0,0,0,1}
+	});
+
+	if(dim.x==1.0f){
+		m=Matrix::dot(rotateX,m);
+	}
+	if(dim.y==1.0f){
+		m=Matrix::dot(rotateY,m);
+	}
+	if(dim.z==1.0f){
+		m=Matrix::dot(rotateZ,m);
+	}
+	return m;
+}
+
+Matrix Matrix::translate(Matrix m,const vec3& ve){
+    Matrix translation(4,4,{
+        {1,0,0,ve.x},
+        {0,1,0,ve.y},
+        {0,0,1,ve.z},
+        {0,0,0,1},
+    });
+
+    return Matrix::dot(translation,m);
+}
+
+
+Matrix Matrix::scale(Matrix m,const vec3& ve){
+    Matrix scaling(4,4,{
+        {ve.x,0,0,0},
+        {0,ve.y,0,0},
+        {0,0,ve.z,0},
+        {0,0, 0  ,1},
+    });
+
+    return Matrix::dot(scaling,m);
+}
+
 ///////////////////////////////////////     OPERATOR OVERLOAD      //////////////////////////////////////////
 std::ostream &operator<<(std::ostream &os, const Matrix& mat){
 	os  << " [\n";
