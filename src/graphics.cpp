@@ -1,5 +1,39 @@
 #include "graphics.h"
 
+void glx::mouseEventHandler(GLFWwindow* window, int button, int action, int mods){
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) clickLeft=true;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) clickLeft=false;
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) clickRight=true;
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_RELEASE) clickRight=false;
+}
+
+bool glx::mouseClicked(int x){
+    return x==0 ? clickLeft : clickRight;
+}
+
+void glx::event(GLFWwindow* w){
+    glfwGetCursorPos(w, &glx::mx, &glx::my);
+    glfwSetMouseButtonCallback(w, glx::mouseEventHandler);
+}
+
+Vec2i glx::mousePos(){
+    return Vec2i(glx::mx,glx::my);
+}
+
+
+float glx::constrain(float n,float low,float high){
+    return std::max(std::min(n, high), low);
+}
+
+float glx::map(float n,float start1,float stop1,float start2,float stop2){
+    float newval= (n - start1) / (stop1 - start1) * (stop2 - start2) + start2;
+    if (start2 < stop2) {
+        return constrain(newval, start2, stop2);
+    } else {
+        return constrain(newval, stop2, start2);
+    }
+}
+
 
 void glx::enableFill(){
     glx::strokeEnabled=true;
@@ -13,23 +47,14 @@ void glx::reset(){
     glx::strokeEnabled=true;
 }
 
-
 void glx::stroke(int r,int g,int b,int a){
     glColor4ub(r,g,b,a);
 }
-
 
 void glx::fill(int r,int g,int b,int a){
     glColor4ub(r,g,b,a);
 }
 
-void glx::event(GLFWwindow* w){
-    glfwGetCursorPos(w, &glx::mx, &glx::my);
-}
-
-Vec2i glx::mousePos(){
-    return Vec2i(glx::mx,glx::my);
-}
 
 void glx::Color(int r,int g,int b,int a){
     glColor4ub(r,g,b,a);
@@ -150,12 +175,8 @@ bool glx::point(int x,int y,float strokeWidth){
     return sqrt((glx::mx - cx)*(glx::mx - cx) + (glx::my - cy)*(glx::my - cy)) <= r;
 }
 
-
-
-
-
-void glx::point(Vec2i a){
-    glx::point(a.x,a.y);
+void glx::point(Vec2i a,float strokeWidth){
+    glx::point(a.x,a.y,strokeWidth);
 }
 
 float glx::lerp(int x,int y,float t){

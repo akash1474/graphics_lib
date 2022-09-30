@@ -61,18 +61,26 @@ namespace glx{
     static double mx=0,my=0;
     static bool fillEnabled=true;
     static bool strokeEnabled=true;
+    static bool clickLeft=false;
+    static bool clickRight=false;
+
+
+    void event(GLFWwindow* w);
+    void mouseEventHandler(GLFWwindow*, int, int, int);
+    bool mouseClicked(int x=0);
+    Vec2i mousePos();
+    void reset();
+
+    float constrain(float n,float low,float high);
+    float map(float n,float start1,float stop1,float start2,float stop2);
 
     void enableFill();
     void enableStroke();
-    void reset();
     inline static void stroke(int x){glColor3ub(x,x,x); }
     void stroke(int r,int g,int b,int a=255);
     inline static void fill(int x){glColor3ub(x,x,x); }
     void fill(int r,int g,int b,int a=255);
-    void event(GLFWwindow* w);
-    Vec2i mousePos();
     void Color(int r,int g,int b,int a=255);
-    bool line(int x1,int y1,int x2,int y2);
     void strokeWidth(int x=1);
 
 
@@ -88,6 +96,7 @@ namespace glx{
     void square(int x1,int y1,int s);
     void square(Vec2i& p,int x);
 
+    bool line(int x1,int y1,int x2,int y2);
     void line(const Vec2f& p1,const Vec2f& p2);
     void line(const Vec2i& p1,const Vec2i& p2);
 
@@ -96,7 +105,7 @@ namespace glx{
 
 
     bool point(int x,int y,float strokeWidth=2);
-    void point(Vec2i a);
+    void point(Vec2i a,float strokeWidth=2);
 
     float lerp(int x,int y,float t);
     Vec2i lerp(Vec2i& x,Vec2i& y,float t);
