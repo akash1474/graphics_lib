@@ -1,5 +1,11 @@
 #include "graphics.h"
 
+
+std::ostream& operator<< (std::ostream& out,const Vec2i& v){
+    out << "Vec2f(" <<v.x << "," << v.y << ")\n";
+    return out;
+}
+
 void glx::mouseEventHandler(GLFWwindow* window, int button, int action, int mods){
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) clickLeft=true;
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_RELEASE) clickLeft=false;
@@ -18,6 +24,10 @@ void glx::event(GLFWwindow* w){
 
 Vec2i glx::mousePos(){
     return Vec2i(glx::mx,glx::my);
+}
+
+void glx::enableDragging(){
+   draggingEnabled=true; 
 }
 
 
@@ -44,6 +54,10 @@ void glx::enableStroke(){
 }
 
 void glx::reset(){
+    if(!draggingEnabled){
+        clickLeft=0;
+        clickRight=0;
+    }
     glx::strokeEnabled=true;
 }
 
@@ -56,7 +70,7 @@ void glx::fill(int r,int g,int b,int a){
 }
 
 
-void glx::Color(int r,int g,int b,int a){
+void glx::color(int r,int g,int b,int a){
     glColor4ub(r,g,b,a);
 }
 
@@ -70,6 +84,14 @@ bool glx::line(int x1,int y1,int x2,int y2){
     double num=abs((dy*glx::mx)-(dx*glx::my)+(x2*y1)-(y2*x1));
     double deno=sqrt(pow(dy,2)+pow(dx,2));
     return num/deno < 3;
+}
+
+bool glx::line(const Vec2f& p1,const Vec2f& p2){
+    return glx::line(p1.x,p1.y,p2.x,p2.y);
+}
+
+bool glx::line(const Vec2i& p1,const Vec2i& p2){
+    return glx::line(p1.x,p1.y,p2.x,p2.y);
 }
 
 void glx::strokeWidth(int x){
@@ -145,13 +167,6 @@ void glx::square(Vec2i& p,int x){
     glx::square(p.x,p.y,x);
 }
 
-void glx::line(const Vec2f& p1,const Vec2f& p2){
-    glx::line(p1.x,p1.y,p2.x,p2.y);
-}
-
-void glx::line(const Vec2i& p1,const Vec2i& p2){
-    glx::line(p1.x,p1.y,p2.x,p2.y);
-}
 
 void glx::putpixel(float x1,float y1){
     glBegin(GL_POINTS);
@@ -172,11 +187,11 @@ bool glx::point(int x,int y,float strokeWidth){
         glVertex2d(cx + x, cy + y);
     }
     glEnd();
-    return sqrt((glx::mx - cx)*(glx::mx - cx) + (glx::my - cy)*(glx::my - cy)) <= r;
+    return sqrt((glx::mx - cx)*(glx::mx - cx) + (glx::my - cy)*(glx::my - cy)) <= (r+2);
 }
 
-void glx::point(Vec2i a,float strokeWidth){
-    glx::point(a.x,a.y,strokeWidth);
+bool glx::point(Vec2i a,float strokeWidth){
+    return glx::point(a.x,a.y,strokeWidth);
 }
 
 float glx::lerp(int x,int y,float t){
@@ -201,4 +216,9 @@ void glx::vertex(int x,int y){
 
 void glx::vertex(Vec2i a){
     glx::vertex(a.x,a.y);
+}
+
+
+double glx::dist(float x1,float y1, float x2,float y2){
+    return std::sqrt(pow(x2-x1,2) + pow(y2-y1,2));
 }

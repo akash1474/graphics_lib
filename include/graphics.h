@@ -1,18 +1,21 @@
 #ifndef GRAPHICS_H
 #define GRAPHICS_H
 
-
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
+#include <ostream>
 #include <string.h>
 #include "math.h"
 #include "iostream"
+#include "chrono"
+#include "thread"
 
 struct Vec2i{
     int x;
     int y;
     Vec2i(){};
     Vec2i(int a,int b):x(a),y(b){}
+    friend std::ostream& operator<<(std::ostream& out,const Vec2i& x);
 };
 
 struct Vec2f{
@@ -20,7 +23,9 @@ struct Vec2f{
     float y;
     Vec2f(){};
     Vec2f(float a,float b):x(a),y(b){}
+
 };
+
 
 struct Color{
     int r=255,g=255,b=255,a=255;
@@ -44,31 +49,42 @@ class Window{
     const char* title;
     GLFWwindow* win;
     void init();
+    void framebuffer_size_callback(GLFWwindow* window, int w, int h);
 public:
+    static int frameRates;
+    static void frameRate(int x);
+
     void setSize(Vec2i& v);
     GLFWwindow* getglfwWindow();
+
     Window()=default;
     Window(int _w,int _h,const char* _t);
+
     bool isOpen();
     void swapBuffers();
+
     void clear();
     void clear(int x);
     void clear(float r,float g,float b, float a=1.0f);
+
     void destroy();
 };
 
 namespace glx{
-    static double mx=0,my=0;
+    static double mx=0;
+    static double my=0;
     static bool fillEnabled=true;
     static bool strokeEnabled=true;
     static bool clickLeft=false;
     static bool clickRight=false;
+    static bool draggingEnabled=false;
 
 
     void event(GLFWwindow* w);
     void mouseEventHandler(GLFWwindow*, int, int, int);
     bool mouseClicked(int x=0);
     Vec2i mousePos();
+    void enableDragging();
     void reset();
 
     float constrain(float n,float low,float high);
@@ -80,7 +96,7 @@ namespace glx{
     void stroke(int r,int g,int b,int a=255);
     inline static void fill(int x){glColor3ub(x,x,x); }
     void fill(int r,int g,int b,int a=255);
-    void Color(int r,int g,int b,int a=255);
+    void color(int r,int g,int b,int a=255);
     void strokeWidth(int x=1);
 
 
@@ -97,15 +113,15 @@ namespace glx{
     void square(Vec2i& p,int x);
 
     bool line(int x1,int y1,int x2,int y2);
-    void line(const Vec2f& p1,const Vec2f& p2);
-    void line(const Vec2i& p1,const Vec2i& p2);
+    bool line(const Vec2f& p1,const Vec2f& p2);
+    bool line(const Vec2i& p1,const Vec2i& p2);
 
 
     void putpixel(float x1,float y1);
 
 
     bool point(int x,int y,float strokeWidth=2);
-    void point(Vec2i a,float strokeWidth=2);
+    bool point(Vec2i a,float strokeWidth=2);
 
     float lerp(int x,int y,float t);
     Vec2i lerp(Vec2i& x,Vec2i& y,float t);
@@ -114,6 +130,8 @@ namespace glx{
     void endShape();
     void vertex(int x,int y);
     void vertex(Vec2i a);
+
+    double dist(float x1,float y1, float x2,float y2);
 };
 
 
