@@ -9,6 +9,7 @@
 #include "iostream"
 #include "chrono"
 #include "thread"
+#include "string"
 
 struct Vec2i{
     int x;
@@ -48,6 +49,10 @@ class Window{
     int height;
     const char* title;
     GLFWwindow* win;
+    double prevTime = 0.0;
+    double crntTime = 0.0;
+    double timeDiff;
+    unsigned int counter = 0;
     void init();
     void framebuffer_size_callback(GLFWwindow* window, int w, int h);
 public:
@@ -59,6 +64,7 @@ public:
 
     Window()=default;
     Window(int _w,int _h,const char* _t);
+    void showFps();
 
     bool isOpen();
     void swapBuffers();
@@ -69,6 +75,23 @@ public:
 
     void destroy();
 };
+
+namespace color{
+    const Color spring_green=Color(0,255,127);
+    const Color light_teal=Color(0,180,190);
+    const Color cyan=Color(0,238,238);
+    const Color golden=Color(255,193,37);
+    const Color red=Color(255,64,64);
+    const Color light_red=Color(255,106,106);
+    const Color blue3=Color(28,134,238);
+    const Color blue2=Color(100,149,237);
+    const Color blue1=Color(65,105,225);
+    const Color light_purple=Color(131,111,255);
+    const Color purple=Color(155,48,255);
+    const Color deep_pink=Color(255,52,179);
+    const Color yellow=Color(255,255,0);
+
+}
 
 namespace glx{
     static double mx=0;
@@ -96,7 +119,8 @@ namespace glx{
     void stroke(int r,int g,int b,int a=255);
     inline static void fill(int x){glColor3ub(x,x,x); }
     void fill(int r,int g,int b,int a=255);
-    void color(int r,int g,int b,int a=255);
+    void fill(const Color& color);
+    // void color(int r,int g,int b,int a=255);
     void strokeWidth(int x=1);
 
 
@@ -117,7 +141,7 @@ namespace glx{
     bool line(const Vec2i& p1,const Vec2i& p2);
 
 
-    void putpixel(float x1,float y1);
+    void putpixel(int x1,int y1,const Color& col);
 
 
     bool point(int x,int y,float strokeWidth=2);

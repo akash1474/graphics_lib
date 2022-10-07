@@ -69,10 +69,14 @@ void glx::fill(int r,int g,int b,int a){
     glColor4ub(r,g,b,a);
 }
 
-
-void glx::color(int r,int g,int b,int a){
-    glColor4ub(r,g,b,a);
+void glx::fill(const Color& c){
+    glColor4ub(c.r,c.g,c.b,c.a);
 }
+
+
+// void glx::color(int r,int g,int b,int a){
+//     glColor4ub(r,g,b,a);
+// }
 
 bool glx::line(int x1,int y1,int x2,int y2){
     glBegin(GL_LINES);
@@ -168,10 +172,12 @@ void glx::square(Vec2i& p,int x){
 }
 
 
-void glx::putpixel(float x1,float y1){
+void glx::putpixel(int x1,int y1,const Color& c){
+    glColor4ub(c.r,c.b,c.g,c.a);
     glBegin(GL_POINTS);
-    glVertex2f(x1,y1);
+    glVertex2i(x1,y1);
     glEnd();
+    glColor4ub(255,255,255,255);
 }
 
 

@@ -52,6 +52,23 @@ Window::Window(int _w,int _h,const char* _t){
     this->init();
 }
 
+void Window::showFps(){
+    crntTime = glfwGetTime();
+    timeDiff = crntTime - prevTime;
+    counter++;
+
+    if (timeDiff >= 1.0 / 30.0)
+    {
+        std::string FPS = std::to_string((1.0 / timeDiff) * counter);
+        std::string ms = std::to_string((timeDiff / counter) * 1000);
+        std::string newTitle = std::string(title) + " - " + FPS + "FPS / " + ms + "ms ";
+        glfwSetWindowTitle(win, newTitle.c_str());
+
+        prevTime = crntTime;
+        counter = 0;
+    }
+}
+
 bool Window::isOpen(){
     return !glfwWindowShouldClose(this->win);
 }

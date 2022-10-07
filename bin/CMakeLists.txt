@@ -1,0 +1,5 @@
+message("-- Linking OpenGL")
+message("-- Linking GLFW")
+message("-- Linking GLEW")
+add_library(C_LIB SHARED IMPORTED glfw.dll glew.dll opengl32.dll)
+set_target_properties(C_LIB PROPERTIES LINKER_LANGUAGE CXX)

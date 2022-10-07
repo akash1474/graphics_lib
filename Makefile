@@ -18,5 +18,9 @@ clean:
 	@rm -r ./src/*.o 
 	@rm -r ./bin/*.exe
 
+build:$(SRC_OBJ)
+	@echo Building...
+# 	@echo 
+
 run:
 	./bin/main.exe
