@@ -1,3 +1,0 @@
-D:/Projects/c++/graphics_lib/build/msvc/CMakeFiles/graphics_lib.dir
-D:/Projects/c++/graphics_lib/build/msvc/CMakeFiles/ALL_BUILD.dir
-D:/Projects/c++/graphics_lib/build/msvc/CMakeFiles/ZERO_CHECK.dir

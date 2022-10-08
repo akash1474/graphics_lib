@@ -22,5 +22,8 @@ build:$(SRC_OBJ)
 	@echo Building...
 # 	@echo 
 
+init_cmake:
+	cmake -H. -GNinja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug -Bbuild/Debug
+
 run:
 	./bin/main.exe

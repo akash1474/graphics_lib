@@ -1,3 +1,0 @@
-D:/Projects/c++/graphics_lib/build/gcc/CMakeFiles/graphics_lib.dir
-D:/Projects/c++/graphics_lib/build/gcc/CMakeFiles/edit_cache.dir
-D:/Projects/c++/graphics_lib/build/gcc/CMakeFiles/rebuild_cache.dir
