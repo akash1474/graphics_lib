@@ -22,8 +22,19 @@ build:$(SRC_OBJ)
 	@echo Building...
 # 	@echo 
 
-init_cmake:
+cmake_debug:
 	cmake -H. -GNinja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Debug -Bbuild/Debug
+	@echo Compiling...
+	cmake --build build/Debug --config Debug
+	@echo Running...
+	./bin/graphics_lib.exe
+
+cmake_release:
+	cmake -H. -GNinja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_BUILD_TYPE=Release -Bbuild/Release
+	@echo Compiling...
+	cmake --build build/Release --config Release
+	@echo Running...
+	./bin/graphics_lib.exe
 
 run:
 	./bin/main.exe
